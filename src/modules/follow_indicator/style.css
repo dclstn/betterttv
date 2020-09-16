@@ -1,0 +1,23 @@
+#bttv-follow-indicator {
+  color: #00e6cb;
+  cursor: pointer;
+  position: relative;
+}
+
+#bttv-follow-indicator:hover .follow-tooltip {
+  visibility: visible;
+}
+
+#bttv-follow-indicator .follow-tooltip {
+  visibility: hidden;
+  position: absolute;
+  width: 100%;
+  background-color: #fff;
+  color: #000;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  z-index: 1;
+  bottom: 100%;
+  opacity: 80%;
+}
