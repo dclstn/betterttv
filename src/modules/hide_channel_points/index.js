@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const settings = require('../../settings');
+import $ from 'jquery';
+import settings from '../../settings';
 
 class HideChannelPointsModule {
     constructor() {
@@ -18,4 +18,4 @@ class HideChannelPointsModule {
     }
 }
 
-module.exports = new HideChannelPointsModule();
+export default new HideChannelPointsModule();

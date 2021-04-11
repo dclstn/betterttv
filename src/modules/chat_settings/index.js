@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const settings = require('../settings');
-const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
-const chatFontSettings = require('../chat_font_settings');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import settings from '../settings';
+import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords';
+import chatFontSettings from '../chat_font_settings';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content,.mod-view-balloon-layer-menu-dropdown .tw-balloon .tw-overflow-auto';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
@@ -90,4 +90,4 @@ class ChatSettingsModule {
     }
 }
 
-module.exports = new ChatSettingsModule();
+export default new ChatSettingsModule();

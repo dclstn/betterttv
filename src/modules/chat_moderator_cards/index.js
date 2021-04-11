@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const ModeratorCard = require('./moderator-card');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import ModeratorCard from './moderator-card';
 
 let openModeratorCard;
 
@@ -76,4 +76,4 @@ class ChatModeratorCardsModule {
 }
 
 
-module.exports = new ChatModeratorCardsModule();
+export default new ChatModeratorCardsModule();

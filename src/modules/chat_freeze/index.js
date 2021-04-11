@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const twitch = require('../../utils/twitch');
-const keycodes = require('../../utils/keycodes');
+import $ from 'jquery';
+import twitch from '../../utils/twitch';
+import keycodes from '../../utils/keycodes';
 
 const CHAT_LIST_SELECTOR = '.chat-list';
 const MESSAGES_INDICATOR_SELECTOR = '.chat-list div[data-a-target="chat-list-footer"]';
@@ -38,4 +38,4 @@ class ChatFreezeModule {
     }
 }
 
-module.exports = new ChatFreezeModule();
+export default new ChatFreezeModule();
