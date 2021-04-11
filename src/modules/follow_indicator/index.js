@@ -1,10 +1,10 @@
-const settings = require('../../settings');
-const domObserver = require('../../observers/dom');
-const $ = require('jquery');
-const twitch = require('../../utils/twitch');
-const watcher = require('../../watcher');
-const twitchAPI = require('../../utils/twitch-api');
-const moment = require('moment');
+import settings from '../../settings';
+import domObserver from '../../observers/dom';
+import $ from 'jquery';
+import twitch from '../../utils/twitch';
+import watcher from '../../watcher';
+import twitchAPI from '../../utils/twitch-api';
+import moment from 'moment';
 
 const USER_CARD_SELECTOR = 'div[data-a-target="about-panel"]';
 const FOLLOW_INDICATOR_ID = 'bttv-follow-indicator';
@@ -24,7 +24,7 @@ class FollowIndicatorModule {
         settings.add({
             id: 'followIndicator',
             name: 'Follow Indicator',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Adds following you indicator inside user-card below video-player.'
         });
         settings.on('changed.followIndicator', value => value === true ? this.load() : this.unload());
@@ -37,7 +37,7 @@ class FollowIndicatorModule {
 
         const currentChannel = twitch.getCurrentChannel();
         const currentUser    = twitch.getCurrentUser();
-        if (!currentUser) return;
+        if (!currentUser || !currentChannel) return;
 
         if (currentChannel.id === currentUser.id) return;
 
@@ -78,5 +78,5 @@ class FollowIndicatorModule {
     }
 }
 
-module.exports = new FollowIndicatorModule();
+export default new FollowIndicatorModule();
 

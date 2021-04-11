@@ -1,14 +1,13 @@
-const $ = require('jquery');
-const cdn = require('../../utils/cdn');
-const debug = require('../../utils/debug');
-const saveAs = require('../../utils/filesaver').saveAs;
-const watcher = require('../../watcher');
-const settings = require('../../settings');
-const storage = require('../../storage');
-const html = require('../../utils/html');
-const api = require('../../utils/api');
-const moment = require('moment');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import cdn from '../../utils/cdn';
+import debug from '../../utils/debug';
+// import {saveAs} from '../../utils/filesaver';
+import watcher from '../../watcher';
+import settings from '../../settings';
+import storage from '../../storage';
+import html from '../../utils/html';
+import api from '../../utils/api';
+import moment from 'moment';
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -140,11 +139,10 @@ class SettingsModule {
     constructor() {
         watcher.on('load', () => {
             this.renderSettings();
-        });
-
-        domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
             this.renderSettingsMenuOption();
         });
+
+        this.renderSettingsMenuOption = this.renderSettingsMenuOption.bind(this);
     }
 
     renderSettings() {
@@ -193,6 +191,9 @@ class SettingsModule {
 
     renderSettingsMenuOption() {
         if ($('.bttvSettingsIconDropDown').length) return;
+
+        // twitch lazy-loads this menu now, so we must retrigger paint on click
+        $('button[data-test-selector="user-menu__toggle"]').off('click', this.renderSettingsMenuOption).on('click', this.renderSettingsMenuOption);
 
         $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
             <div class="tw-full-width tw-relative">
@@ -261,4 +262,4 @@ class SettingsModule {
     }
 }
 
-module.exports = new SettingsModule();
+export default new SettingsModule();

@@ -1,4 +1,4 @@
-module.exports = class AbstractEmotes {
+class AbstractEmotes {
     constructor() {
         this.emotes = new Map();
 
@@ -15,3 +15,5 @@ module.exports = class AbstractEmotes {
         return this.emotes.get(code);
     }
 };
+
+export default AbstractEmotes

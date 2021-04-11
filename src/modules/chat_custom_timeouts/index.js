@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const keyCodes = require('../../utils/keycodes');
-const twitch = require('../../utils/twitch');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import keyCodes from '../../utils/keycodes';
+import twitch from '../../utils/twitch';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -50,7 +50,7 @@ function handleTimeoutClick(e, messageId) {
         } else if (action.type === ActionTypes.DELETE) {
             twitch.sendChatMessage(`/delete ${messageId}`);
         }
-        if (command && user) {
+        if (command) {
             const reason = e.shiftKey ? setReason(action.type) : '';
             twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
         }
@@ -161,4 +161,4 @@ class ChatCustomTimeoutsModule {
     }
 }
 
-module.exports = new ChatCustomTimeoutsModule();
+export default new ChatCustomTimeoutsModule();

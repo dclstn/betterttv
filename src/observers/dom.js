@@ -1,18 +1,16 @@
-const SafeEventEmitter = require('../utils/safe-event-emitter');
+import SafeEventEmitter from '../utils/safe-event-emitter';
 
 const IGNORED_HTML_TAGS = new Set(['BR', 'HEAD', 'LINK', 'META', 'SCRIPT', 'STYLE']);
 
 let observer;
 const observedIds = Object.create(null);
 const observedClassNames = Object.create(null);
-const observedTestSelectors = Object.create(null);
 const attributeObservers = new Map();
 
 function parseSelector(selector) {
     const partialSelectors = selector.split(',').map(s => s.trim());
     const ids = [];
     const classNames = [];
-    const testSelectors = [];
     for (const partialSelector of partialSelectors) {
         if (partialSelector.startsWith('#')) {
             ids.push({
@@ -24,17 +22,11 @@ function parseSelector(selector) {
                 key: partialSelector.split(' ')[0].split('.')[1],
                 partialSelector
             });
-        } else if (partialSelector.includes('[data-test-selector')) {
-            testSelectors.push({
-                key: partialSelector.split(' ')[0].split('[data-test-selector="')[1].split('"]')[0],
-                partialSelector
-            });
         }
     }
     return {
         ids,
-        classNames,
-        testSelectors
+        classNames
     };
 }
 
@@ -94,12 +86,6 @@ function processMutations(emitter, nodes) {
             processObservedResults(emitter, node, observedIds[nodeId]);
         }
 
-        let testSelector = node.getAttribute('data-test-selector');
-        if (typeof testSelector === 'string' && testSelector.length > 0) {
-            testSelector = testSelector.trim();
-            processObservedResults(emitter, node, observedTestSelectors[testSelector]);
-        }
-
         const nodeClassList = node.classList;
         if (nodeClassList && nodeClassList.length > 0) {
             for (let className of nodeClassList) {
@@ -154,18 +140,7 @@ class DOMObserver extends SafeEventEmitter {
 
         const initialNodes = [];
         for (const selectorType of Object.keys(parsedSelector)) {
-            let observedSelectorType;
-            switch (selectorType) {
-                case 'ids':
-                    observedSelectorType = observedIds;
-                    break;
-                case 'classNames':
-                    observedSelectorType = observedClassNames;
-                    break;
-                case 'testSelectors':
-                    observedSelectorType = observedTestSelectors;
-                    break;
-            }
+            const observedSelectorType = selectorType === 'ids' ? observedIds : observedClassNames;
 
             for (const {key, partialSelector} of parsedSelector[selectorType]) {
                 const currentObservedTypeSelectors = observedSelectorType[key];
@@ -207,18 +182,7 @@ class DOMObserver extends SafeEventEmitter {
         const parsedSelector = parseSelector(selector);
 
         for (const selectorType of Object.keys(parsedSelector)) {
-            let observedSelectorType;
-            switch (selectorType) {
-                case 'ids':
-                    observedSelectorType = observedIds;
-                    break;
-                case 'classNames':
-                    observedSelectorType = observedClassNames;
-                    break;
-                case 'testSelectors':
-                    observedSelectorType = observedTestSelectors;
-                    break;
-            }
+            const observedSelectorType = selectorType === 'ids' ? observedIds : observedClassNames;
 
             for (const {key} of parsedSelector[selectorType]) {
                 const currentObservedTypeSelectors = observedSelectorType[key];
@@ -242,4 +206,4 @@ class DOMObserver extends SafeEventEmitter {
     }
 }
 
-module.exports = new DOMObserver();
+export default new DOMObserver();

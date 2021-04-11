@@ -1,8 +1,9 @@
-const moment = require('moment');
-const twitch = require('../../utils/twitch');
-const twitchAPI = require('../../utils/twitch-api');
-const chat = require('../chat');
-const anonChat = require('../anon_chat');
+import moment from 'moment';
+import twitch from '../../utils/twitch';
+import twitchAPI from '../../utils/twitch-api';
+import tmiAPI from '../../utils/tmi-api';
+import chat from '../chat';
+import anonChat from '../anon_chat';
 
 const CommandHelp = {
     b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
@@ -178,22 +179,11 @@ function handleCommands(message) {
             command === 'join' ? anonChat.join() : anonChat.part();
             break;
 
-        case 'chatters': {
-            const query = `
-                query ChatViewers($name: String!) {
-                    channel(name: $name) {
-                        chatters {
-                            count
-                        }
-                    }
-                }
-            `;
-
-            twitchAPI.graphqlQuery(query, {name: channel.name})
-                .then(({data: {channel: {chatters: {count}}}}) => twitch.sendChatAdminMessage(`Current Chatters: ${count.toLocaleString()}`))
+        case 'chatters':
+            tmiAPI.get(`group/user/${channel.name}/chatters`)
+                .then(({chatter_count: chatterCount}) => twitch.sendChatAdminMessage(`Current Chatters: ${chatterCount.toLocaleString()}`))
                 .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
             break;
-        }
         case 'followed':
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
@@ -265,4 +255,4 @@ class ChatCommandsModule {
     }
 }
 
-module.exports = new ChatCommandsModule();
+export default new ChatCommandsModule();

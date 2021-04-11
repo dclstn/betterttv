@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const twitch = require('../utils/twitch');
-const debug = require('../utils/debug');
-const domObserver = require('../observers/dom');
-const historyObserver = require('../observers/history');
+import $ from 'jquery';
+import twitch from '../utils/twitch';
+import debug from '../utils/debug';
+import domObserver from '../observers/dom';
+import historyObserver from '../observers/history';
 
 let watcher;
 let currentPath = '';
@@ -162,7 +162,7 @@ function onRouteChange(location) {
     }
 }
 
-module.exports = watcher_ => {
+export default function (watcher_) {
     watcher = watcher_;
 
     historyObserver.on('pushState', location => onRouteChange(location));
@@ -170,17 +170,11 @@ module.exports = watcher_ => {
     historyObserver.on('popState', location => onRouteChange(location));
     onRouteChange(location);
 
-    // force reload chat when the input gets recreated (popout open/close)
+    // force reload chat when the input get recreated (popout open/close)
     domObserver.on('.chat-input', (node, isConnected) => {
         if (!isConnected) return;
 
         twitch.updateCurrentChannel();
         watcher.emit('load.chat');
-    });
-
-    // force reload player when the player gets recreated
-    domObserver.on('.persistent-player', (node, isConnected) => {
-        if (!isConnected) return;
-        waitForLoad('player').then(() => watcher.emit('load.player'));
     });
 };

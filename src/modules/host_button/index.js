@@ -2,7 +2,7 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
-const twitchAPI = require('../../utils/twitch-api');
+const tmiApi = require('../../utils/tmi-api');
 const domObserver = require('../../observers/dom');
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
@@ -47,7 +47,6 @@ class HostButtonModule {
 
         if (!$hostButton) {
             $hostButton = $(buttonTemplate);
-            $hostButton.find('button').click(() => this.toggleHost());
         }
         removeShareButtonListener = domObserver.on('.tw-button-icon', (node, isConnected) => {
             if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
@@ -62,6 +61,7 @@ class HostButtonModule {
         if (!$shareButton.length) return;
         $hostButton.toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
+        $hostButton.find('button').click(() => this.toggleHost());
     }
 
     toggleHost() {
@@ -85,20 +85,14 @@ class HostButtonModule {
     }
 
     updateHostingState(userId, channelId) {
-        const query = `
-            query ChannelHosting {
-                currentUser {
-                    hosting {
-                        id
-                    }
-                }
-            }
-        `;
-
-        return twitchAPI.graphqlQuery(query).then(({data: {currentUser: {hosting: {id: targetId}}}}) => {
-            hosting = targetId.toString() === channelId;
-            this.updateHostButtonText();
-        });
+        return tmiApi.get('hosts', {qs: {host: userId}})
+            .then(({hosts}) => {
+                if (!Array.isArray(hosts) || !hosts.length) return;
+                const host = hosts[0];
+                if (!host || !host.target_id) return;
+                hosting = host.target_id.toString() === channelId;
+                this.updateHostButtonText();
+            });
     }
 
     updateHostButtonText() {

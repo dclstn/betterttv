@@ -1,10 +1,10 @@
-const $ = require('jquery');
-const twitchAPI = require('./twitch-api');
+import $ from 'jquery';
+import twitchAPI from './twitch-api';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
-const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
+const CHAT_LIST = '.chat-list';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
@@ -109,7 +109,7 @@ let chatClient;
 let currentUser;
 let currentChannel;
 
-module.exports = {
+export default {
     setCurrentUser(accessToken, id, name, displayName) {
         twitchAPI.setAccessToken(accessToken);
 
@@ -265,7 +265,7 @@ module.exports = {
         try {
             const node = searchReactChildren(
                 getReactInstance($(CHAT_LIST)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.scrollRef
+                n => n.stateNode && n.stateNode.props && n.stateNode.scroll
             );
             chatScroller = node.stateNode;
         } catch (_) {}
@@ -361,39 +361,17 @@ module.exports = {
         return msgObject;
     },
 
-    getChatModeratorCardUser(element) {
-        let user;
+    getChatModeratorCardProps(element) {
+        let apolloComponent;
         try {
-            const node = searchReactChildren(
+            const node = searchReactParents(
                 getReactInstance(element),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.targetUserID && n.stateNode.props.targetLogin,
-                20
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.data
             );
-            const props = node.stateNode.props;
-            user = {
-                id: props.targetUserID,
-                login: props.targetLogin,
-                displayName: props.targetDisplayName || props.targetLogin,
-            };
+            apolloComponent = node.stateNode.props;
         } catch (_) {}
 
-        if (!user) {
-            try {
-                const node = searchReactParents(
-                    getReactInstance(element),
-                    n => n.stateNode && n.stateNode.props && n.stateNode.props.channelID && n.stateNode.props.channelLogin && n.stateNode.props.targetLogin && n.stateNode.props.channelLogin === n.stateNode.props.targetLogin,
-                    20
-                );
-                const props = node.stateNode.props;
-                user = {
-                    id: props.channelID,
-                    login: props.channelLogin,
-                    displayName: props.channelDisplayName || props.channelLogin,
-                };
-            } catch (_) {}
-        }
-
-        return user;
+        return apolloComponent;
     },
 
     getUserIsModeratorFromTagsBadges(badges) {

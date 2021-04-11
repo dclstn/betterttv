@@ -19,7 +19,7 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
-const CHAT_LIST_SELECTOR = '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container';
+const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines,.chat-list .chat-scrollable-area__message-container';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
@@ -144,10 +144,6 @@ function messageContainsKeyword(keywords, from, message) {
     return false;
 }
 
-function isReply($message) {
-    return $message.parent().hasClass('chat-input-tray__open');
-}
-
 function messageTextFromAST(ast) {
     return ast.map(node => {
         switch (node.type) {
@@ -237,9 +233,6 @@ class ChatHighlightBlacklistKeywordsModule {
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
-
-            if (isReply($message)) return;
-
             if (settings.get('highlightFeedback')) {
                 this.handleHighlightSound();
             }

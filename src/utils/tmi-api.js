@@ -1,12 +1,12 @@
 import $ from 'jquery';
 import querystring from 'querystring';
 
-const API_ENDPOINT = 'https://api.betterttv.net/3/';
+const TMI_ENDPOINT = 'https://tmi.twitch.tv/';
 
 function request(method, path, options = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
+            url: `${TMI_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
             method,
             dataType: options.dataType || 'json',
             data: options.body ? JSON.stringify(options.body) : undefined,
@@ -23,21 +23,5 @@ function request(method, path, options = {}) {
 export default {
     get(path, options) {
         return request('GET', path, options);
-    },
-
-    post(path, options) {
-        return request('POST', path, options);
-    },
-
-    put(path, options) {
-        return request('PUT', path, options);
-    },
-
-    patch(path, options) {
-        return request('PATCH', path, options);
-    },
-
-    delete(path, options) {
-        return request('DELETE', path, options);
     }
 };
