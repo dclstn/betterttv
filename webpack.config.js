@@ -32,7 +32,8 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
-                { from: './src/assets', to: 'assets'}
+                { from: './src/assets', to: 'assets'},
+                { from: './src/betterttv.css', to: 'betterttv.css'}
             ]
         }),
         new CleanWebpackPlugin()
