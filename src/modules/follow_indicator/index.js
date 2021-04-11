@@ -6,6 +6,7 @@ import watcher from '../../watcher';
 import twitchAPI from '../../utils/twitch-api';
 import moment from 'moment';
 
+
 const USER_CARD_SELECTOR = 'div[data-a-target="about-panel"]';
 const FOLLOW_INDICATOR_ID = 'bttv-follow-indicator';
 
@@ -24,7 +25,7 @@ class FollowIndicatorModule {
         settings.add({
             id: 'followIndicator',
             name: 'Follow Indicator',
-            defaultValue: true,
+            defaultValue: false,
             description: 'Adds following you indicator inside user-card below video-player.'
         });
         settings.on('changed.followIndicator', value => value === true ? this.load() : this.unload());
