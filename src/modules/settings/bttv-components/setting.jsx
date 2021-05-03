@@ -5,7 +5,7 @@ import debug from '../../../utils/debug.js';
 
 import Toggle from 'rsuite/lib/Toggle/index.js';
 import Dropdown from 'rsuite/lib/Dropdown/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
+import Button from 'rsuite/lib/Button/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import Checkbox from 'rsuite/lib/Checkbox/index.js';
 import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
@@ -48,30 +48,23 @@ function getSetting({id, type, options, _defaultValue}) {
           title={options[selected]}
           trigger={['click', 'hover']}
           renderTitle={(children) => {
-            return (
-              <IconButton appearance="primary" icon={<Icon icon="down" />}>
-                {children}
-              </IconButton>
-            );
+            return <Button appearance="primary">{children}</Button>;
           }}>
           {items}
         </Dropdown>
       );
     case 2: {
-      const items = options.choices.map((option, index) => {
-        return (
-          <Checkbox key={index} value={index}>
-            {option}
-          </Checkbox>
-        );
-      });
       return (
         <CheckboxGroup
           value={value}
           onChange={(value) => {
             setValue(value);
           }}>
-          {items}
+          {options.choices.map((option, index) => (
+            <Checkbox key={index} value={index}>
+              {option}
+            </Checkbox>
+          ))}
         </CheckboxGroup>
       );
     }
